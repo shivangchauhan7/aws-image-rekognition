@@ -1,0 +1,22 @@
+service: aws-img-rekognition
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rekognition:DetectLabels
+        - s3:Get*
+        - s3:List*
+        - sns:Publish*
+      Resource: "*"
+
+functions:
+  identifyImg:
+    handler: src/index.identifyImg
+    events:
+      - s3:
+          bucket: "dev-img-folder"
+          event: s3:ObjectCreated:*
+          existing: true
